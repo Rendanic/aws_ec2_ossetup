@@ -1,0 +1,16 @@
+---
+# ansible-galaxy install geerlingguy.docker
+ - name: Install most important Packages
+   hosts: localhost
+   tasks:
+      - name: Packageinsallation
+        package: name="{{ item }}"
+        with_items:
+           - git
+           - bash-completion
+           - python-pip
+
+   roles:
+      - role: christiangda.amazon_ssm_agent
+        vars:
+              ssm_update: false
