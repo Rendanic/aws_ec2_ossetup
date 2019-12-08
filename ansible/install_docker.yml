@@ -32,6 +32,13 @@
       with_items:
         - docker-ce
         - docker-compose
+        - python-docker-py
+
+    - name: Disable Selinux
+      selinux:
+         policy: targeted
+         state: permissive
+      tags: selinux
 
     - name: Service Docker
       service: name=docker state=started enabled=true
