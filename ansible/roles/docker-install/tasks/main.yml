@@ -1,0 +1,61 @@
+
+- name: Download EPEL RPM
+  get_url:
+     url: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+     dest: /var/tmp/epel.rpm
+     mode: '0644'
+  when: ansible_distribution in ('OracleLinux')
+
+- name: Install EPEL Repository
+  package: name=/var/tmp/epel.rpm
+  when: ansible_distribution in ('OracleLinux')
+  tags: rpm
+
+- name: Add Docker Repository (Amazon)
+  command: amazon-linux-extras enable docker
+  when: ansible_distribution == 'Amazon'
+
+- name: Install addional RPMs
+  package: name="{{ item }}"
+  with_items:
+    - wget
+    - yum-utils
+    - net-tools 
+    - bash-completion
+    - tree
+    - gcc
+    - libffi-devel
+    - python-devel
+    - openssl-devel
+    - python-pip
+    - python-wheel
+    - device-mapper-persistent-data
+  tags: rpm
+
+- name: Add Repository
+  get_url:
+     url: https://download.docker.com/linux/centos/docker-ce.repo
+     dest: /etc/yum.repos.d/docker-ce.repo
+     mode: '0644'
+  when: ansible_distribution in ('OracleLinux')
+  tags: repo
+
+- name: Install Docker
+  package: name="{{ item }}"
+  with_items:
+    - docker-ce
+    - docker-compose
+    - python-docker-py
+  when: ansible_distribution in ('OracleLinux')
+
+
+- name: Disable Selinux
+  selinux:
+
+
+     policy: targeted
+     state: permissive
+  tags: selinux
+
+- name: Service Docker
+  service: name=docker state=started enabled=true
