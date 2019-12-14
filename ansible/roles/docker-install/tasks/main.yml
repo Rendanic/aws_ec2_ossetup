@@ -4,11 +4,11 @@
      url: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
      dest: /var/tmp/epel.rpm
      mode: '0644'
-  when: ansible_distribution in ('OracleLinux')
+  when: ansible_distribution in ('CentOS', 'OracleLinux')
 
 - name: Install EPEL Repository
   package: name=/var/tmp/epel.rpm
-  when: ansible_distribution in ('OracleLinux')
+  when: ansible_distribution in ('CentOS', 'OracleLinux')
   tags: rpm
 
 - name: Add Docker Repository (Amazon)
@@ -37,7 +37,7 @@
      url: https://download.docker.com/linux/centos/docker-ce.repo
      dest: /etc/yum.repos.d/docker-ce.repo
      mode: '0644'
-  when: ansible_distribution in ('OracleLinux')
+  when: ansible_distribution in ('CentOS', 'OracleLinux')
   tags: repo
 
 - name: Install Docker
@@ -46,7 +46,7 @@
     - docker-ce
     - docker-compose
     - python-docker-py
-  when: ansible_distribution in ('OracleLinux')
+  when: ansible_distribution in ('CentOS', 'OracleLinux')
 
 
 - name: Disable Selinux
