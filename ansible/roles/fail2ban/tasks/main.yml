@@ -4,17 +4,33 @@
     dest: /etc/fail2ban/jail.local
     backup: true
 
+- name: collect facts about system services
+  service_facts:
+  register: services_state
+  tags: firewald
+
+- name: State of firewald
+  debug: msg="{{services_state['ansible_facts']['services']['firewalld.service'].state}}"
+  when: services_state['ansible_facts']['services']['firewalld.service'].state is defined 
+  tags: firewald
+
 - name: copy firewald configuration to disable
   file:
     src: /etc/fail2ban/jail.d/00-firewalld.conf
     path: /etc/fail2ban/jail.d/00-firewalld.conf.disabled
     state: hard
+  when: services_state['ansible_facts']['services']['firewalld.service'].state is defined 
+    and services_state['ansible_facts']['services']['firewalld.service'].state != 'running'
   ignore_errors: True
+  tags: firewald
 
 - name: Remove firewald configuration
   file:
     path: /etc/fail2ban/jail.d/00-firewalld.conf
     state: absent
+  when: services_state['ansible_facts']['services']['firewalld.service'].state is defined 
+    and services_state['ansible_facts']['services']['firewalld.service'].state != 'running'
+  tags: firewald
 
 - name: Reload fail2ban
   service: 
