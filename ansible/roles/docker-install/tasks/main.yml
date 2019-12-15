@@ -49,14 +49,14 @@
   when: ansible_distribution in ('CentOS', 'OracleLinux')
 
 - name: Install Docker (Amazon)
-package: name="{{ item }}"
-with_items:
-   - docker
-when: ansible_distribution == 'Amazon'
+  package: name="{{ item }}"
+  with_items:
+    - docker
+  when: ansible_distribution == 'Amazon'
 
 - name: Install Docker
   pip: name=docker-py
-when: ansible_distribution == 'Amazon'
+  when: ansible_distribution == 'Amazon'
 
 - name: Disable Selinux
   selinux:
