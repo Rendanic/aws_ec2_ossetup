@@ -3,7 +3,7 @@
 before = paths-fedora.conf
 
 [DEFAULT]
-ignoreip = 127.0.0.1/8
+ignoreip = {{ security_fail2ban_ignoreip | default('127.0.0.1/8') }}
 
 ignorecommand =
 
