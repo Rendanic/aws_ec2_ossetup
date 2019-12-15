@@ -12,7 +12,7 @@
   tags: rpm
 
 - name: Add Docker Repository (Amazon)
-  command: amazon-linux-extras enable docker
+  command: yes | amazon-linux-extras enable docker
   when: ansible_distribution == 'Amazon'
 
 - name: Install addional RPMs
@@ -48,11 +48,18 @@
     - python-docker-py
   when: ansible_distribution in ('CentOS', 'OracleLinux')
 
+- name: Install Docker (Amazon)
+package: name="{{ item }}"
+with_items:
+   - docker
+when: ansible_distribution == 'Amazon'
+
+- name: Install Docker
+  pip: name=docker-py
+when: ansible_distribution == 'Amazon'
 
 - name: Disable Selinux
   selinux:
-
-
      policy: targeted
      state: permissive
   tags: selinux
