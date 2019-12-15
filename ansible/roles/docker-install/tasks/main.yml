@@ -12,7 +12,7 @@
   tags: rpm
 
 - name: Add Docker Repository (Amazon)
-  command: yes | amazon-linux-extras enable docker
+  command: amazon-linux-extras enable docker
   when: ansible_distribution == 'Amazon'
 
 - name: Install addional RPMs
@@ -54,7 +54,7 @@
     - docker
   when: ansible_distribution == 'Amazon'
 
-- name: Install Docker
+- name: Install docker-py (Amazon)
   pip: name=docker-py
   when: ansible_distribution == 'Amazon'
 
