@@ -1,0 +1,78 @@
+[INCLUDES]
+
+before = paths-fedora.conf
+
+[DEFAULT]
+ignoreip = 127.0.0.1/8
+
+ignorecommand =
+
+bantime  = {{ security_fail2ban_bantime | default(1800) }}
+findtime  = {{ security_fail2ban_findtime | default(600) }}
+maxretry = {{ security_fail2ban_maxretry | default(5) }}
+
+backend = auto
+usedns = warn
+logencoding = auto
+enabled = false
+
+filter = %(__name__)s
+
+destemail = root@localhost
+sender = root@localhost
+mta = sendmail
+protocol = tcp
+
+chain = INPUT
+port = 0:65535
+
+fail2ban_agent = Fail2Ban/%(fail2ban_version)s
+
+banaction = iptables-multiport
+banaction_allports = iptables-allports
+
+action_ = %(banaction)s[name=%(__name__)s, bantime="%(bantime)s", port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
+
+# ban & send an e-mail with whois report to the destemail.
+#action_mw = %(banaction)s[name=%(__name__)s, bantime="%(bantime)s", port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
+#            %(mta)s-whois[name=%(__name__)s, sender="%(sender)s", dest="%(destemail)s", protocol="%(protocol)s", chain="%(chain)s"]
+
+# ban & send an e-mail with whois report and relevant log lines
+# to the destemail.
+#action_mwl = %(banaction)s[name=%(__name__)s, bantime="%(bantime)s", port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
+#             %(mta)s-whois-lines[name=%(__name__)s, sender="%(sender)s", dest="%(destemail)s", logpath=%(logpath)s, chain="%(chain)s"]
+
+# ban & send a xarf e-mail to abuse contact of IP address and include relevant log lines
+# to the destemail.
+#action_xarf = %(banaction)s[name=%(__name__)s, bantime="%(bantime)s", port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
+#             xarf-login-attack[service=%(__name__)s, sender="%(sender)s", logpath=%(logpath)s, port="%(port)s"]
+
+action = %(action_)s
+
+[f2b-loop]
+enabled = true
+filter = recidive
+bantime = 86400 ;1 day
+findtime = 604800 ;1 week
+logpath = /var/log/fail2ban.log
+maxretry = 3
+
+[sshd]
+enabled = true
+port    = ssh
+logpath = %(sshd_log)s
+backend = %(sshd_backend)s
+
+[sshd-ddos]
+port    = ssh
+logpath = %(sshd_log)s
+backend = %(sshd_backend)s
+
+[dropbear]
+port     = ssh
+logpath  = %(dropbear_log)s
+backend  = %(dropbear_backend)s
+
+[selinux-ssh]
+port     = ssh
+logpath  = %(auditd_log)s

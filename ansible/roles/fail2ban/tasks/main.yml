@@ -1,0 +1,22 @@
+- name: Update jail.conf
+  template:
+    src: jail.conf.j2
+    dest: /etc/fail2ban/jail.local
+    backup: true
+
+- name: copy firewald configuration to disable
+  file:
+    src: /etc/fail2ban/jail.d/00-firewalld.conf
+    path: /etc/fail2ban/jail.d/00-firewalld.conf.disabled
+    state: hard
+  ignore_errors: True
+
+- name: Remove firewald configuration
+  file:
+    path: /etc/fail2ban/jail.d/00-firewalld.conf
+    state: absent
+
+- name: Reload fail2ban
+  service: 
+    name:  fail2ban
+    state: reloaded

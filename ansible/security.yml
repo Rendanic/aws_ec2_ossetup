@@ -1,0 +1,13 @@
+- hosts: localhost
+  vars:
+    security_fail2ban_enabled: true
+    security_autoupdate_enabled: false
+    security_fail2ban_maxretry: 10
+
+    # for testing
+    # security_ssh_password_authentication: "yes"
+    # security_ssh_permit_root_login: "no"
+
+  roles:
+    - geerlingguy.security
+    - fail2ban
