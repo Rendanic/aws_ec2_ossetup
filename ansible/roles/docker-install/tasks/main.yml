@@ -30,6 +30,7 @@
     - python-pip
     - python-wheel
     - device-mapper-persistent-data
+    - libselinux-python
   tags: rpm
 
 - name: Add Repository
