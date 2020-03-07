@@ -1,8 +1,8 @@
 - hosts: localhost
   vars:
     security_fail2ban_enabled: true
-    security_autoupdate_enabled: false
-    security_fail2ban_maxretry: 10
+    security_autoupdate_enabled: true
+    security_fail2ban_maxretry: 5
 
     # for testing
     # security_ssh_password_authentication: "yes"
