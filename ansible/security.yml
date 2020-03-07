@@ -9,5 +9,6 @@
     # security_ssh_permit_root_login: "no"
 
   roles:
+    - swap
     - geerlingguy.security
     - fail2ban

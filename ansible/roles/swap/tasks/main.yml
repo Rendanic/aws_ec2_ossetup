@@ -1,0 +1,42 @@
+---
+- name: Create swap file
+  command: |
+    dd if=/dev/zero of={{ swapfile_path }} bs=1M count={{ swapfile_size }}
+  args:
+    creates: "{{ swapfile_path }}"
+  register: swapfile_register_create
+  when: create_swap|bool
+  tags: swap
+
+- name: Set swap file permissions
+  file:
+    path: "{{ swapfile_path }}"
+    state: "file"
+    owner: "root"
+    group: "root"
+    mode: "0600"
+  when: create_swap|bool
+  tags: swap
+
+- name: create swap
+  filesystem:
+    dev: "{{ swapfile_path }}"
+    fstype: swap
+  when: create_swap|bool
+  tags: swap
+
+- name: Mount swap
+  mount:
+    path: swap
+    src: "{{ swapfile_path }}"
+    fstype: swap
+    opts: defaults
+    state: present
+  when: create_swap|bool
+  tags: swap
+
+- name: Enable Swap
+  command: |
+    swapon -a
+  when: create_swap|bool
+  tags: swap
